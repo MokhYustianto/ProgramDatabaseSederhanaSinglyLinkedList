@@ -1,0 +1,157 @@
+///Program Database Sederhana Singly Linked List Mokh Yustianto R///
+
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+struct karyawan{
+	int ID ; //menampung integer employee ID karyawan
+	char NamaLengkap[30]; //menampung karakter nama lengkap karyawan
+	char Jabatan[50]; //menampung karakter jabatan karyawan
+	char TempatLahir[30]; //menampung karakter tempat tinggal karyawan
+	struct karyawan *next; //menampung alamat data selanjutnya
+}*head, *tail, *current;
+
+
+void pushHead(int ID, char NamaLengkap[],char Jabatan[], char TempatLahir[]){
+    //alokasi memory untuk data baru
+	current = (struct karyawan*)malloc(sizeof(struct karyawan));
+	current->ID = ID; 
+	strcpy(current->NamaLengkap, NamaLengkap); 
+    strcpy(current->Jabatan, Jabatan);
+    strcpy(current->TempatLahir, TempatLahir);
+    
+	if(head == NULL){ //jika nilai head adalah null, maka set head = tail = current
+		head = tail = current; //set nilai head = tail = current
+	}
+	else{ //jika nilai head tidak null, maka
+		current->next = head; //set nilai current->next = head
+		head = current; //kemudian set nilai head = current
+	}
+}
+
+void pushTail(int ID, char NamaLengkap[], char Jabatan[], char TempatLahir[]){
+	current = (struct karyawan*)malloc(sizeof(struct karyawan)); //alokasi memory untuk data baru
+	current->ID = ID;
+	strcpy(current->NamaLengkap, NamaLengkap); 
+    strcpy(current->Jabatan, Jabatan);
+     strcpy(current->TempatLahir, TempatLahir);
+     
+	if(head == NULL){ //jika nilai head adalah null, maka set head = tail = current
+		head = tail = current; //set nilai head = tail = current
+	}
+	else{ //jika nilai head tidak null, maka
+		tail->next = current; //set nilai tail->next = current
+		tail = current; //kemudian set nilai tail = current
+	}
+	tail->next = NULL; //kemudian set nilai tail menjadi null
+}
+
+void popHead(){
+	current=head; //set nilai current sebagai head
+	if(head==NULL){ //jika head bernilai null
+		printf("No data"); //tampilkan info tidak ada data
+	}else if(head==tail){ //jika nilai head = tail
+		head=tail=NULL; //set nilai head = tail = null
+		free(current); //hapus nilai current (head)
+	}else{ //jika nilai head bukan null dan bukan tail
+		head=head->next; //set nilai head menjadi data selanjutnya dari head
+		free(current);// hapus nilai current (head)
+	}
+}
+
+void popTail(){
+	if(head==NULL){ //jika nilai head = null
+		printf("No data"); //tampilkan info tidak ada data
+	}else if(head==tail){ //jika nilai head = tail
+		head=tail=NULL; //set nilai head = tail = null
+		free(current); //hapus nilai current
+	}else{ //jika nilai head bukan null dan bukan tail
+		struct karyawan *temp=head; //buat variabel penampung baru dan assign/beri nilai mulai dari head
+		while(temp->next!=tail){ //looping untuk mencari posisi 1 data sebelum tail
+			temp=temp->next; //set nilai temp menjadi 1 data setelahnya
+		}
+		current=tail; //set nilai current menjadi tail
+		tail=temp; //set nilai tail menjadi 1 data sebelum tail (hasil looping)
+		free(current); //hapus nilai current
+		tail->next=NULL; //set nilai setelah next menjadi null/pointer next punya tail diset null
+	}
+}
+
+void print(){
+	current = head; //set current sebagai head
+	while(current != NULL){ //looping selama current bukan null
+	    printf("\n");
+	    printf("---------------------------------------\n");
+		printf("Nama Lengkap : %s\n",current->NamaLengkap); //menampilkan nilai nama lengkap
+		printf("Employee ID : %d\n", current->ID); //menampilkan employee ID Karyawan
+		printf("Jabatan: %s\n", current->Jabatan); //Menampilkan Jabatan Karyawan
+		printf("Tempat Lahir: %s", current->TempatLahir); //menampilkan Tempat Lahir Karyawan
+		printf("---------------------------------------\n");
+		current = current->next; //set current menjadi nilai setelahnya
+	}
+}
+
+int main(){
+    int jumlah, i, ID;
+    char NamaLengkap[30], Jabatan[50], TempatLahir[30], hapustambah, pilihan, lagi;
+    awal:
+    system("clear");
+    printf("Masukkan Jumlah Data Karyawan: "); scanf("%d", &jumlah);
+    for(i=1; i<=jumlah; i++){
+    	printf("\n");
+        printf("Masukkan data ke %d: \n", i);
+        printf("Nama Lengkap: "); scanf("%s", &NamaLengkap);
+        printf("Employee ID : "); scanf("%d", &ID);
+        printf("Jabatan: "); scanf("%s", &Jabatan);
+        printf("Tempat Lahir: "); scanf("%s", &TempatLahir);
+        if(i == 1){
+            pushHead(ID, NamaLengkap, Jabatan, TempatLahir);
+        } else{
+            printf("Masukkan data ke Depan atau Belakang? (d untuk depan, b untuk belakang): ");
+            scanf("%s", &pilihan);
+            if(pilihan == 'd'){
+                pushHead(ID, NamaLengkap,Jabatan, TempatLahir);
+            } else{
+                pushTail(ID, NamaLengkap, Jabatan, TempatLahir);
+            }
+        }
+    }
+    print();
+    printf("Mau Menghapus atau Menambah Data? (y untuk nambah, n untuk hapus) ");
+    scanf("%s", &hapustambah);
+    if(hapustambah == 'y'){
+        printf("Nama Lengkap: "); scanf("%s", &NamaLengkap);
+        printf("Employee ID: "); scanf("%d", &ID);
+        printf("Jabatan: "); scanf("%s",&Jabatan);
+        printf("Tempat Lahir: "); scanf("%s", &TempatLahir);
+        scanf("%s", &pilihan);
+        
+        if(pilihan == 'd'){
+            pushHead(ID, NamaLengkap, Jabatan, TempatLahir);
+        } else{
+            pushTail(ID, NamaLengkap, Jabatan, TempatLahir);
+        }
+    } else{
+        printf("Hapus Depan atau Belakang? (d untuk depan, b untuk belakang) ");
+        scanf("%s", &pilihan);
+        if(pilihan == 'd'){
+            popHead();
+        } else{
+            popTail();
+        }
+    }
+
+    print();
+    printf("Mau Menambah Data? (y untuk nambah, n untuk tidak) ");
+    scanf("%s", &lagi);
+    if(lagi == 'y'){
+        goto awal;
+    } else{
+        goto akhir;
+    }
+    akhir:
+	getchar();
+	return 0;
+}
